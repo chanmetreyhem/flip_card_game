@@ -19,7 +19,7 @@ class CongratulationPopup extends StatelessWidget {
       height: Get.height,
       color: Colors.black54,
     );
-    var winPrizeIcon = Container(
+    var winPrizeIcon = SizedBox(
       height: 140,
       width: 140,
       // color: Colors.red,controller.winPrizes['image_url_win']

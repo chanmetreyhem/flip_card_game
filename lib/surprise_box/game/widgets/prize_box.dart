@@ -15,38 +15,59 @@ class PrizeCard extends StatefulWidget {
   _PrizeCardState createState() => _PrizeCardState();
 }
 
-class _PrizeCardState extends State<PrizeCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
+  late AnimationController flipAnimationController;
+  late Animation<double> flipAnimation;
+
+  late AnimationController shakeAnimationController;
+  late Animation<double> shakeAnimation;
   final gameController = Get.find<SurpriseBoxGameController>();
   late ImageProvider prizeImage;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    flipAnimationController = AnimationController(
       duration: Duration(milliseconds: 300),
       vsync: this,
     );
 
-    _animation = Tween<double>(
-      begin: 0,
-      end: pi,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    shakeAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    flipAnimation = Tween<double>(begin: 0, end: pi).animate(
+      CurvedAnimation(parent: flipAnimationController, curve: Curves.easeInOut),
+    );
+
+    shakeAnimation = Tween<double>(begin: -1.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: shakeAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    //shakeAnimationController.repeat(reverse: true);
+    //shakeAnimationController.
   }
 
   void _flipCard() async {
     if (!gameController.isClickable) return;
-    if (_controller.isDismissed) {
+    if (flipAnimationController.isDismissed) {
+      shakeAnimationController.repeat(reverse: true);
       await gameController.flipCard(widget.index);
+
       prizeImage = await preloadNetworkImage(
         gameController.winPrizes['image_url_win'],
       );
-      await _controller.forward();
+      shakeAnimationController.stop();
+
+      await flipAnimationController.forward();
+
       await gameController.showCongratulationPopup();
-    } else if (_controller.isCompleted) {
-      _controller.reverse();
+    } else if (flipAnimationController.isCompleted) {
+      flipAnimationController.reverse();
     }
   }
 
@@ -80,7 +101,8 @@ class _PrizeCardState extends State<PrizeCard>
 
   @override
   void dispose() {
-    _controller.dispose();
+    flipAnimationController.dispose();
+    shakeAnimationController.dispose();
     super.dispose();
   }
 
@@ -89,9 +111,9 @@ class _PrizeCardState extends State<PrizeCard>
     return GestureDetector(
       onTap: _flipCard,
       child: AnimatedBuilder(
-        animation: _animation,
+        animation: flipAnimation,
         builder: (context, child) {
-          final angle = _animation.value;
+          final angle = flipAnimation.value;
           final isFrontVisible = angle <= pi / 2;
 
           return Transform(
@@ -100,7 +122,18 @@ class _PrizeCardState extends State<PrizeCard>
               ..setEntry(3, 2, 0.001) // perspective
               ..rotateY(angle),
             child: isFrontVisible
-                ? _buildFront()
+                ? AnimatedBuilder(
+                    animation: shakeAnimation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(
+                          shakeAnimation.value,
+                          shakeAnimation.value,
+                        ),
+                        child: _buildFront(),
+                      );
+                    },
+                  )
                 : Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.identity()..rotateY(pi),

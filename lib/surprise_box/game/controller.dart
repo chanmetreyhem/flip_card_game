@@ -79,6 +79,8 @@ class SurpriseBoxGameController extends GetxController {
       data: {'card_number': index},
     );
 
+    await await Future.delayed(Duration(milliseconds: 1500));
+
     _isLoading.value = false;
 
     _winPrizes.value = result!['win_prize'] as Map<String, dynamic>;
