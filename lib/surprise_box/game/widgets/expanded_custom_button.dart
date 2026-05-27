@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/config/config.dart';
 
@@ -25,12 +26,15 @@ class ExpandedCustomButton extends StatelessWidget {
           alignment: .center,
           decoration: BoxDecoration(
             color: backgroundColor,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.h),
             border: Border.all(width: 1, color: AppColor.white),
           ),
           child: Text(
             title,
-            style: AppTextStyle.mediumWhiteBold.copyWith(color: textColor),
+            style: AppTextStyle.mediumWhiteBold.copyWith(
+              color: textColor,
+              fontSize: 14.h,
+            ),
           ),
         ),
       ),

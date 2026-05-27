@@ -147,12 +147,13 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
 
   Widget _buildFront() {
     return Container(
-      height: 400,
-      width: 400,
+      //height: 400,
+      //width: 400,
       alignment: Alignment.center,
 
       padding: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
+        //color: Colors.red,
         image: DecorationImage(image: AssetImage(AppAssets.board)),
       ),
       child: Image.asset(AppAssets.questionMarkBoard, fit: .contain),

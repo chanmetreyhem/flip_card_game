@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card_game/surprise_box/game/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 
@@ -75,14 +76,14 @@ class _BigPrizeBoxState extends State<BigPrizeBox>
       imageUrl: gameController.bigPrizes[currentIndex],
     );
     return Container(
-      width: 180,
-      height: 180,
+      width: 260.h,
+      height: 260.h,
 
       decoration: BoxDecoration(
         image: DecorationImage(image: AssetImage(AppAssets.circleFrame)),
       ),
       child: Container(
-        padding: EdgeInsets.all(40),
+        padding: EdgeInsets.all(60).h,
         decoration: BoxDecoration(
           image: DecorationImage(image: AssetImage(AppAssets.light)),
         ),

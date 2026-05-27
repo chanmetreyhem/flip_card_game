@@ -1,5 +1,6 @@
 import 'package:flip_card_game/surprise_box/game/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -15,18 +16,18 @@ class GameView extends StatelessWidget {
     return Obx(() {
       return SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
-            spacing: 20,
+            spacing: 20.h,
             mainAxisAlignment: .start,
             children: [
               SizedBox(
                 child: Row(
-                  spacing: 10,
+                  spacing: 10.w,
                   children: [
                     Container(
-                      width: 35,
-                      height: 35,
+                      width: 35.h,
+                      height: 35.h,
                       padding: EdgeInsets.only(left: 8),
                       alignment: .center,
                       decoration: BoxDecoration(
@@ -57,9 +58,10 @@ class GameView extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, // 3 columns
-                    crossAxisSpacing: 12, // optional spacing between columns
-                    mainAxisSpacing: 12, // optional spacing between rows
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 12.w,
+                    mainAxisSpacing: 12.w,
+                    mainAxisExtent: 130.h,
                   ),
                   itemCount: 6,
                   itemBuilder: (BuildContext context, int index) {
