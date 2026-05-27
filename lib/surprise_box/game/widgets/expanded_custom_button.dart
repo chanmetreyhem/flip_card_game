@@ -23,6 +23,7 @@ class ExpandedCustomButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10.h),
           alignment: .center,
           decoration: BoxDecoration(
             color: backgroundColor,

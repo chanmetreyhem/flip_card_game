@@ -76,8 +76,8 @@ class _BigPrizeBoxState extends State<BigPrizeBox>
       imageUrl: gameController.bigPrizes[currentIndex],
     );
     return Container(
-      width: 260.h,
-      height: 260.h,
+      width: 200.h,
+      height: 200.h,
 
       decoration: BoxDecoration(
         image: DecorationImage(image: AssetImage(AppAssets.circleFrame)),

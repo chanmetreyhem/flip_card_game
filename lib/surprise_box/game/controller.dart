@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card_game/assets.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../call_api.dart';
@@ -16,11 +20,20 @@ class SurpriseBoxGameController extends GetxController {
     AppLotties.yellowEffect,
   ];
 
+  final headerCongratulationLight = [
+    AppAssets.headerLightHaft,
+    AppAssets.headerLightHaft,
+    AppAssets.headerLightHaft,
+  ];
+
   final _boardImage = AppAssets.prizeBlueBoard.obs;
   String get boardImage => _boardImage.value;
 
   final _effect = AppLotties.yellowEffect.obs;
   String get effect => _effect.value;
+
+  final _headerLight = AppAssets.headerLightHaft.obs;
+  String get headerLight => _headerLight.value;
 
   final _wingPoint = 0.obs;
   int get wingPoint => _wingPoint.value;
@@ -72,8 +85,8 @@ class SurpriseBoxGameController extends GetxController {
   }
 
   Future<void> flipCard(int index) async {
-    _isLoading.value = true;
     _isClickable.value = false;
+
     final result = await onSurpriseBoxFunctionRequest(
       function: 'flip-card',
       data: {'card_number': index},
@@ -81,23 +94,51 @@ class SurpriseBoxGameController extends GetxController {
 
     await await Future.delayed(Duration(milliseconds: 1500));
 
-    _isLoading.value = false;
-
     _winPrizes.value = result!['win_prize'] as Map<String, dynamic>;
 
     // ignore: invalid_use_of_protected_member
     int tier = _winPrizes.value['tier'] ?? 0;
-    _boardImage.value = congratulationBoard[tier - 1];
-    _effect.value = congratulationEffect[tier - 1];
-    _wingPoint.value = result['user_info']['wing_point'];
-  }
-
-  Future<bool> checkLoadingImage() async {
-    return false;
+    int matchedIndex = tier > 0 ? tier - 1 : 0;
+    setUpCongratulationUI(matchedIndex);
+    
   }
 
   Future<void> showCongratulationPopup() async {
     await await Future.delayed(Duration(milliseconds: 500));
     _isCongratulation.value = true;
+  }
+
+  void setUpCongratulationUI(int matchedIndex) {
+    _boardImage.value = congratulationBoard[matchedIndex];
+    _effect.value = congratulationEffect[matchedIndex];
+    _headerLight.value = headerCongratulationLight[matchedIndex];
+  }
+
+  Future<ImageProvider> preloadNetworkImage(String url) async {
+    final imageProvider = CachedNetworkImageProvider(url);
+    final completer = Completer<ImageProvider>();
+
+    final ImageStream stream = imageProvider.resolve(ImageConfiguration.empty);
+    final listener = ImageStreamListener(
+      (ImageInfo info, bool synchronousCall) {
+        if (!completer.isCompleted) {
+          completer.complete(imageProvider);
+        }
+      },
+      onError: (dynamic exception, StackTrace? stackTrace) {
+        if (!completer.isCompleted) {
+          completer.completeError(exception, stackTrace);
+        }
+      },
+    );
+
+    stream.addListener(listener);
+
+    try {
+      final result = await completer.future;
+      return result;
+    } finally {
+      stream.removeListener(listener);
+    }
   }
 }

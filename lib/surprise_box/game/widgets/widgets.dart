@@ -1,7 +1,13 @@
 export 'prize_box.dart';
 export 'big_prize_box.dart';
 export 'wing_point_box.dart';
-export 'congratulation_popup.dart';
+export 'congratulation_popup_view.dart';
 export 'random_text.dart';
 export 'game_view.dart';
 export 'expanded_custom_button.dart';
+export 'win_prize_icon.dart';
+export 'brand_info.dart';
+export 'view_detail_button.dart';
+export 'header_light.dart';
+export 'top_prize_badge.dart';
+export 'win_prize_info.dart';

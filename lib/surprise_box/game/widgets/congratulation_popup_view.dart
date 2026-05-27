@@ -1,36 +1,27 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card_game/assets.dart';
 import 'package:flip_card_game/core/config/config.dart';
 import 'package:flip_card_game/router/app_route.dart';
 import 'package:flip_card_game/surprise_box/game/controller.dart';
+
 import 'package:flip_card_game/surprise_box/game/widgets/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class CongratulationPopup extends StatelessWidget {
-  const CongratulationPopup({super.key});
+class CongratulationPopupView extends StatelessWidget {
+  const CongratulationPopupView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final SurpriseBoxGameController controller = Get.find();
+
     var background = Container(
       width: Get.width,
       height: Get.height,
       color: Colors.black54,
     );
-    var winPrizeIcon = SizedBox(
-      height: 140.h,
-      width: 140.h,
-      // color: Colors.red,controller.winPrizes['image_url_win']
-      child: CachedNetworkImage(
-        progressIndicatorBuilder: (context, url, progress) =>
-            CircularProgressIndicator(),
 
-        imageUrl: controller.winPrizes['image_url_win'],
-      ),
-    );
     var winPrizeInfo = Column(
       spacing: 5.h,
       mainAxisAlignment: .center,
@@ -52,81 +43,7 @@ class CongratulationPopup extends StatelessWidget {
         ),
       ],
     );
-    var viewDetailButton = TextButton(
-      onPressed: () => {},
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.all(10.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(10.h),
-        ),
-        backgroundColor: Colors.lightGreen.shade50,
-      ),
-      child: Text(
-        'View Detail',
-        style: TextStyle(fontSize: 14.h, color: Colors.green),
-      ),
-    );
-    var brandInfo = Column(
-      mainAxisSize: .min,
-      spacing: 10.h,
-      children: [
-        SizedBox(
-          //color: Colors.red,
-          child: Image.asset(
-            AppAssets.sep,
-            width: double.infinity,
-            height: 1.h,
-            fit: BoxFit.contain,
-          ),
-        ),
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Row(
-            mainAxisAlignment: .center,
-            spacing: 20.h,
-            children: [
-              if (!controller.winPrizes['brand']['logo_url']
-                  .toString()
-                  .contains('https'))
-                Image.asset(AppAssets.wingPointIcon, width: 40.h, height: 40.h),
-              if (controller.winPrizes['brand']['logo_url'].toString().contains(
-                'https',
-              ))
-                Image.network(
-                  controller.winPrizes['brand']['logo_url'],
-                  width: 40.h,
-                  height: 40.h,
-                ),
-              Text(
-                controller.winPrizes['brand']['name'] ?? 'Untitled',
-                textAlign: .center,
-                style: AppTextStyle.normalMidNightBlueBold.copyWith(
-                  overflow: TextOverflow.clip,
-                  fontSize: 14.h,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-    var topPrizeBadge = Positioned(
-      top: 10.h,
-      right: 10.h,
-      child: Container(
-        height: 40.h,
-        width: 70.h,
-        alignment: .center,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(AppAssets.topPrize),
-            fit: BoxFit.contain,
-          ),
-        ),
-        child: Text("TOP PRIZE", style: AppTextStyle.smallWhiteBold),
-      ),
-    );
+
     return Stack(
       children: [
         background,
@@ -141,15 +58,10 @@ class CongratulationPopup extends StatelessWidget {
                 clipBehavior: .none,
                 alignment: .center,
                 children: [
-                  //SizedBox(width: 300, height: 400),
-                  Positioned(
-                    top: -160.h,
-                    child: SizedBox(
-                      width: 300.h,
-                      height: 200.h,
-                      child: Image.asset(AppAssets.headerLightHaft),
-                    ),
-                  ),
+                  // header light
+                  HeaderLight(assetPath: AppAssets.headerLightHaft),
+
+                  // content box
                   Container(
                     width: 300.h,
                     height: 400.h,
@@ -169,36 +81,45 @@ class CongratulationPopup extends StatelessWidget {
                           spacing: 10.h,
                           children: [
                             // win prize Icon
-                            winPrizeIcon,
+                            WinPrizeIcon(
+                              imageUrl: controller.winPrizes['image_url_win'],
+                            ),
 
                             // Prize Info
-                            winPrizeInfo,
+                            WinPrizeInfo(
+                              title: controller.winPrizes['title'],
+                              description: controller.winPrizes['description'],
+                              subDescription:
+                                  controller.winPrizes['sub_description'],
+                            ),
 
                             // View Detail Button
                             if (controller.winPrizes['detail'] != null)
-                              viewDetailButton,
+                              ViewDetailButton(),
                           ],
                         ),
                         // Brand Info
-                        brandInfo,
+                        BrandInfo(
+                          brandName:
+                              controller.winPrizes['brand']['name'] ??
+                              'Untitled',
+                        ),
                       ],
                     ),
                   ),
 
-                  if (controller.winPrizes['tier'] == 3) topPrizeBadge,
+                  if (controller.winPrizes['tier'] == 3) TopPrizeBadge(),
                 ],
               ),
-              Column(
-                spacing: 10.h,
-                children: [
-                  // Extra Button
-                  if (controller.winPrizes['extra_buttons'] != null &&
-                      controller.winPrizes['extra_buttons'].length > 0)
-                    SizedBox(
-                      height: 50.h,
-                      width: 300.h,
-
-                      child: Row(
+              SizedBox(
+                width: 300.h,
+                child: Column(
+                  spacing: 10.h,
+                  children: [
+                    // Extra Button
+                    if (controller.winPrizes['extra_buttons'] != null &&
+                        controller.winPrizes['extra_buttons'].length > 0)
+                      Row(
                         spacing: 10.h,
                         children: [
                           for (var button
@@ -210,20 +131,19 @@ class CongratulationPopup extends StatelessWidget {
                             ),
                         ],
                       ),
-                    ),
-                  // share and check prize buttons
-                  SizedBox(
-                    height: 50.h,
-                    width: 300.h,
-                    child: Row(
+
+                    Row(
                       spacing: 10.h,
                       children: [
+                        // share button
                         ExpandedCustomButton(
                           title: "Share",
                           backgroundColor: Colors.white,
                           textColor: AppColor.primary,
-                          onTap: () => {},
+                          onTap: () => Get.toNamed(AppRoute.share),
                         ),
+
+                        // check prize button
                         ExpandedCustomButton(
                           title: "Check Prize",
                           backgroundColor: Colors.white,
@@ -232,13 +152,8 @@ class CongratulationPopup extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
 
-                  SizedBox(
-                    height: 50.h,
-                    width: 300.h,
-
-                    child: Row(
+                    Row(
                       spacing: 10.h,
                       children: [
                         ExpandedCustomButton(
@@ -249,8 +164,8 @@ class CongratulationPopup extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

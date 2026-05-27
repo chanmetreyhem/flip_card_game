@@ -5,7 +5,6 @@ import 'package:flip_card_game/assets.dart';
 import 'package:flip_card_game/surprise_box/game/game.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-
 import 'package:get/get.dart';
 
 class PrizeCard extends StatefulWidget {
@@ -33,7 +32,7 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
     );
 
     shakeAnimationController = AnimationController(
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 500),
       vsync: this,
     );
 
@@ -41,7 +40,7 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
       CurvedAnimation(parent: flipAnimationController, curve: Curves.easeInOut),
     );
 
-    shakeAnimation = Tween<double>(begin: -1.0, end: 1.0).animate(
+    shakeAnimation = Tween<double>(begin: 1, end: 1.05).animate(
       CurvedAnimation(
         parent: shakeAnimationController,
         curve: Curves.easeInOut,
@@ -58,9 +57,10 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
       shakeAnimationController.repeat(reverse: true);
       await gameController.flipCard(widget.index);
 
-      prizeImage = await preloadNetworkImage(
+      prizeImage = await gameController.preloadNetworkImage(
         gameController.winPrizes['image_url_win'],
       );
+
       shakeAnimationController.stop();
 
       await flipAnimationController.forward();
@@ -125,11 +125,8 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
                 ? AnimatedBuilder(
                     animation: shakeAnimation,
                     builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(
-                          shakeAnimation.value,
-                          shakeAnimation.value,
-                        ),
+                      return ScaleTransition(
+                        scale: shakeAnimation,
                         child: _buildFront(),
                       );
                     },
@@ -147,8 +144,6 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
 
   Widget _buildFront() {
     return Container(
-      //height: 400,
-      //width: 400,
       alignment: Alignment.center,
 
       padding: EdgeInsets.only(bottom: 20),
@@ -163,8 +158,6 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
   Widget _buildBack() {
     final SurpriseBoxGameController controller = Get.find();
     return Container(
-      height: 400,
-      width: 400,
       alignment: Alignment.center,
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(

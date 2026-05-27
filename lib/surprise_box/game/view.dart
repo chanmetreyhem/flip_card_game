@@ -28,7 +28,7 @@ class SurpriseBoxGameView extends GetView<SurpriseBoxGameController> {
             Obx(() {
               return Visibility(
                 visible: controller.isCongratulation,
-                child: CongratulationPopup(),
+                child: CongratulationPopupView(),
               );
             }),
           ],
