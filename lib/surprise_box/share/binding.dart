@@ -1,9 +1,9 @@
+import 'package:flip_card_game/surprise_box/share/share.dart';
 import 'package:get/instance_manager.dart';
 
-class SharePrizeBinding extends Bindings{
+class SharePrizeBinding extends Bindings {
   @override
   void dependencies() {
-    // TODO: implement dependencies
+    Get.put(SharePrizeController());
   }
-
 }

@@ -54,6 +54,7 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
   void _flipCard() async {
     if (!gameController.isClickable) return;
     if (flipAnimationController.isDismissed) {
+      
       shakeAnimationController.repeat(reverse: true);
       await gameController.flipCard(widget.index);
 
