@@ -16,8 +16,8 @@ class SurpriseBoxGameController extends GetxController {
   ];
 
   final congratulationEffect = [
-    AppLotties.yellowEffect,
-    AppLotties.yellowEffect,
+    AppLotties.blueEffect,
+    AppLotties.greenEffect,
     AppLotties.yellowEffect,
   ];
 
@@ -30,7 +30,7 @@ class SurpriseBoxGameController extends GetxController {
   final _boardImage = AppAssets.prizeBlueBoard.obs;
   String get boardImage => _boardImage.value;
 
-  final _effect = AppLotties.yellowEffect.obs;
+  final _effect = AppLotties.blueEffect.obs;
   String get effect => _effect.value;
 
   final _headerLight = AppAssets.headerLightHaft.obs;

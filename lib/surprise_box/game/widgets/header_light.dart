@@ -9,10 +9,19 @@ class HeaderLight extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       top: -160.h,
-      child: SizedBox(
-        width: 300.h,
-        height: 200.h,
-        child: Image.asset(assetPath),
+      child: TweenAnimationBuilder(
+        tween: Tween<double>(begin: 0, end: 1),
+        duration: Duration(milliseconds: 100),
+        builder: (context, t, w) {
+          return Transform.scale(
+            scale: t,
+            child: SizedBox(
+              width: 300.h,
+              height: 200.h,
+              child: Image.asset(assetPath),
+            ),
+          );
+        },
       ),
     );
   }

@@ -22,7 +22,8 @@ class _CongratulationPopupViewState extends State<CongratulationPopupView>
   final SurpriseBoxGameController controller = Get.find();
 
   late AnimationController animationController;
-  late Animation<double> animation;
+  late Animation<double> scaleAnimation;
+  late Animation<double> transitionAnimation;
 
   @override
   void initState() {
@@ -31,8 +32,12 @@ class _CongratulationPopupViewState extends State<CongratulationPopupView>
       vsync: this,
     );
 
-    animation = Tween<double>(begin: 0, end: 1).animate(
+    scaleAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: animationController, curve: Curves.easeInOutSine),
+    );
+
+    transitionAnimation = Tween<double>(begin: 1, end: 1).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.elasticInOut),
     );
 
     animationController.forward();
@@ -56,7 +61,7 @@ class _CongratulationPopupViewState extends State<CongratulationPopupView>
     return Stack(
       children: [
         background,
-        Lottie.asset(AppLotties.yellowEffect),
+        Lottie.asset(controller.effect),
         Center(
           child: Column(
             mainAxisSize: .min,
@@ -68,6 +73,18 @@ class _CongratulationPopupViewState extends State<CongratulationPopupView>
                 children: [
                   // header light
                   HeaderLight(assetPath: AppAssets.headerLightHaft),
+                  TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 0, end: 1),
+                    duration: Duration(milliseconds: 2000),
+                    builder: (context, double t, _) {
+                      return Transform.scale(
+                        scale: t,
+                        child: HeaderLight(
+                          assetPath: AppAssets.headerLightHaft,
+                        ),
+                      );
+                    },
+                  ),
 
                   // content box
                   CongratulationContentBox(),
@@ -76,10 +93,10 @@ class _CongratulationPopupViewState extends State<CongratulationPopupView>
                 ],
               ),
               AnimatedBuilder(
-                animation: animation,
+                animation: scaleAnimation,
                 builder: (context, _) {
                   return ScaleTransition(
-                    scale: animation,
+                    scale: scaleAnimation,
                     child: SizedBox(
                       width: 300.h,
                       child: Column(

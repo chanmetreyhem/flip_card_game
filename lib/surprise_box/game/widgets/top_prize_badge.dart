@@ -9,7 +9,7 @@ class TopPrizeBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 10.h,
+      top: 20.h,
       right: 10.h,
       child: Container(
         height: 40.h,

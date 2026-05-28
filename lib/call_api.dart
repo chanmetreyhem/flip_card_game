@@ -245,7 +245,7 @@ Map<String, dynamic> gameData = {
       ],
       "brand": {"name": "Wing Bank", "logo_url": "wing_logo"},
       "type": "physical",
-      "tier": 1,
+      "tier": 2,
       "is_giftable": true,
     },
   },

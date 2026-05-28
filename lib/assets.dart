@@ -25,6 +25,7 @@ class AppAssets {
 
 class AppLotties {
   static String splash = 'assets/lotties/Splashscreen_reward.json';
-  static String blueEffect = 'assets/lotties/Blue Confetti_screen.json';
-  static String yellowEffect = 'assets/lotties/Yellow Confetti_compress.json';
+  static String blueEffect = 'assets/lotties/Blue confetti.json';
+  static String yellowEffect = 'assets/lotties/Yellow confetti.json';
+  static String greenEffect = 'assets/lotties/Green confetti.json';
 }
