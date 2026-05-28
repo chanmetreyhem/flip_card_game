@@ -17,6 +17,10 @@ class AppAssets {
   static String sep = 'assets/images/games/sep.png';
   static String topPrize = 'assets/images/games/top prize.png';
   static String headerLightHaft = 'assets/images/games/header_light_half.png';
+  static String wingBankIcon = 'assets/images/games/icons/wing_bank_icon.png';
+  static String wingCircleIcon =
+      'assets/images/games/icons/wing_circle_logo.png';
+  static String prizeGroup = 'assets/images/games/prize_group.png';
 }
 
 class AppLotties {

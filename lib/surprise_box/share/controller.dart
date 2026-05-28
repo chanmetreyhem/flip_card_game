@@ -8,6 +8,17 @@ import 'package:share_plus/share_plus.dart';
 
 class SharePrizeController extends GetxController {
   final GlobalKey widgetKey = GlobalKey();
+
+  late Map<String, dynamic> winPrize;
+  @override
+  void onInit() {
+    final argument = Get.arguments as Map<String, dynamic>;
+
+    winPrize = argument;
+
+    super.onInit();
+  }
+
   @override
   void onReady() {
     super.onReady();
@@ -30,7 +41,15 @@ class SharePrizeController extends GetxController {
       ByteData? byteData = await image.toByteData(
         format: ui.ImageByteFormat.png,
       );
+
       Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      final shareText =
+          winPrize['description'] +
+          " " +
+          winPrize['sub_description'] +
+          " " +
+          winPrize['title'];
 
       final param = ShareParams(
         files: [
@@ -40,11 +59,11 @@ class SharePrizeController extends GetxController {
             mimeType: "image/png",
           ),
         ],
+        text: shareText,
       );
 
       await SharePlus.instance.share(param);
-
-      print("Share");
+      Get.back();
     } catch (e) {
       debugPrint("Error capturing screenshot: $e");
     }

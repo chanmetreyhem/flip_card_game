@@ -11,3 +11,4 @@ export 'view_detail_button.dart';
 export 'header_light.dart';
 export 'top_prize_badge.dart';
 export 'win_prize_info.dart';
+export 'congratulation_content_box.dart';

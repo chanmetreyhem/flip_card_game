@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flip_card_game/assets.dart';
+import 'package:flip_card_game/router/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -100,7 +101,6 @@ class SurpriseBoxGameController extends GetxController {
     int tier = _winPrizes.value['tier'] ?? 0;
     int matchedIndex = tier > 0 ? tier - 1 : 0;
     setUpCongratulationUI(matchedIndex);
-    
   }
 
   Future<void> showCongratulationPopup() async {
@@ -112,6 +112,10 @@ class SurpriseBoxGameController extends GetxController {
     _boardImage.value = congratulationBoard[matchedIndex];
     _effect.value = congratulationEffect[matchedIndex];
     _headerLight.value = headerCongratulationLight[matchedIndex];
+  }
+
+  void sharePrize() {
+    Get.toNamed(AppRoute.share, arguments: _winPrizes.value);
   }
 
   Future<ImageProvider> preloadNetworkImage(String url) async {

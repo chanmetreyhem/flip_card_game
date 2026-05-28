@@ -9,39 +9,48 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class CongratulationPopupView extends StatelessWidget {
+class CongratulationPopupView extends StatefulWidget {
   const CongratulationPopupView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final SurpriseBoxGameController controller = Get.find();
+  State<CongratulationPopupView> createState() =>
+      _CongratulationPopupViewState();
+}
 
+class _CongratulationPopupViewState extends State<CongratulationPopupView>
+    with SingleTickerProviderStateMixin {
+  final SurpriseBoxGameController controller = Get.find();
+
+  late AnimationController animationController;
+  late Animation<double> animation;
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+      duration: Duration(milliseconds: 600),
+      vsync: this,
+    );
+
+    animation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeInOutSine),
+    );
+
+    animationController.forward();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var background = Container(
       width: Get.width,
       height: Get.height,
       color: Colors.black54,
-    );
-
-    var winPrizeInfo = Column(
-      spacing: 5.h,
-      mainAxisAlignment: .center,
-      children: [
-        Text(
-          controller.winPrizes['title'] ?? 'Untitled',
-          textAlign: .center,
-          style: AppTextStyle.largeMidNightBlueBold.copyWith(fontSize: 24.h),
-        ),
-        Text(
-          controller.winPrizes['description'] ?? 'Untitled',
-          textAlign: .center,
-          style: AppTextStyle.normalLightGreySemiBold.copyWith(fontSize: 14.h),
-        ),
-        Text(
-          controller.winPrizes['sub_description'] ?? 'Untitled',
-          textAlign: .center,
-          style: AppTextStyle.normalPrimarySemiBold.copyWith(fontSize: 12.h),
-        ),
-      ],
     );
 
     return Stack(
@@ -53,7 +62,6 @@ class CongratulationPopupView extends StatelessWidget {
             mainAxisSize: .min,
 
             children: [
-              // contend box
               Stack(
                 clipBehavior: .none,
                 alignment: .center,
@@ -62,110 +70,74 @@ class CongratulationPopupView extends StatelessWidget {
                   HeaderLight(assetPath: AppAssets.headerLightHaft),
 
                   // content box
-                  Container(
-                    width: 300.h,
-                    height: 400.h,
-                    padding: EdgeInsets.all(20.h),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(controller.boardImage),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: .spaceAround,
-                      spacing: 20.h,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          spacing: 10.h,
-                          children: [
-                            // win prize Icon
-                            WinPrizeIcon(
-                              imageUrl: controller.winPrizes['image_url_win'],
-                            ),
-
-                            // Prize Info
-                            WinPrizeInfo(
-                              title: controller.winPrizes['title'],
-                              description: controller.winPrizes['description'],
-                              subDescription:
-                                  controller.winPrizes['sub_description'],
-                            ),
-
-                            // View Detail Button
-                            if (controller.winPrizes['detail'] != null)
-                              ViewDetailButton(),
-                          ],
-                        ),
-                        // Brand Info
-                        BrandInfo(
-                          brandName:
-                              controller.winPrizes['brand']['name'] ??
-                              'Untitled',
-                        ),
-                      ],
-                    ),
-                  ),
+                  CongratulationContentBox(),
 
                   if (controller.winPrizes['tier'] == 3) TopPrizeBadge(),
                 ],
               ),
-              SizedBox(
-                width: 300.h,
-                child: Column(
-                  spacing: 10.h,
-                  children: [
-                    // Extra Button
-                    if (controller.winPrizes['extra_buttons'] != null &&
-                        controller.winPrizes['extra_buttons'].length > 0)
-                      Row(
+              AnimatedBuilder(
+                animation: animation,
+                builder: (context, _) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: SizedBox(
+                      width: 300.h,
+                      child: Column(
                         spacing: 10.h,
                         children: [
-                          for (var button
-                              in (controller.winPrizes['extra_buttons']
-                                  as List))
-                            ExpandedCustomButton(
-                              title: button['text'],
-                              onTap: () => {},
+                          // Extra Button
+                          if (controller.winPrizes['extra_buttons'] != null &&
+                              controller.winPrizes['extra_buttons'].length > 0)
+                            Row(
+                              spacing: 10.h,
+                              children: [
+                                for (var button
+                                    in (controller.winPrizes['extra_buttons']
+                                        as List))
+                                  ExpandedCustomButton(
+                                    title: button['text'],
+                                    onTap: () => {},
+                                  ),
+                              ],
                             ),
+
+                          Row(
+                            spacing: 10.h,
+                            children: [
+                              // share button
+                              ExpandedCustomButton(
+                                title: "Share",
+                                backgroundColor: Colors.white,
+                                textColor: AppColor.primary,
+                                onTap: () => controller.sharePrize(),
+                              ),
+
+                              // check prize button
+                              ExpandedCustomButton(
+                                title: "Check Prize",
+                                backgroundColor: Colors.white,
+                                textColor: AppColor.primary,
+                                onTap: () => {},
+                              ),
+                            ],
+                          ),
+
+                          Row(
+                            spacing: 10.h,
+                            children: [
+                              ExpandedCustomButton(
+                                title: "Exit",
+                                backgroundColor: Colors.white,
+                                textColor: Colors.black,
+                                onTap: () => {Get.offAllNamed(AppRoute.splash)},
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-
-                    Row(
-                      spacing: 10.h,
-                      children: [
-                        // share button
-                        ExpandedCustomButton(
-                          title: "Share",
-                          backgroundColor: Colors.white,
-                          textColor: AppColor.primary,
-                          onTap: () => Get.toNamed(AppRoute.share),
-                        ),
-
-                        // check prize button
-                        ExpandedCustomButton(
-                          title: "Check Prize",
-                          backgroundColor: Colors.white,
-                          textColor: AppColor.primary,
-                          onTap: () => {},
-                        ),
-                      ],
                     ),
-
-                    Row(
-                      spacing: 10.h,
-                      children: [
-                        ExpandedCustomButton(
-                          title: "Exit",
-                          backgroundColor: Colors.white,
-                          textColor: Colors.black,
-                          onTap: () => {Get.offAllNamed(AppRoute.splash)},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ],
           ),
