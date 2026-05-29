@@ -119,6 +119,7 @@ class SurpriseBoxGameController extends GetxController {
   }
 
   Future<ImageProvider> preloadNetworkImage(String url) async {
+    
     final imageProvider = CachedNetworkImageProvider(url);
     final completer = Completer<ImageProvider>();
 

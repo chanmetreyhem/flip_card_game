@@ -6,6 +6,7 @@ import 'package:flip_card_game/surprise_box/game/game.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:lightning_overlay/lightning_overlay.dart';
 
 class PrizeCard extends StatefulWidget {
   final int index;
@@ -22,6 +23,8 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
   late Animation<double> shakeAnimation;
   final gameController = Get.find<SurpriseBoxGameController>();
   late ImageProvider prizeImage;
+
+  LightningController lightningController = LightningController();
 
   @override
   void initState() {
@@ -54,7 +57,6 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
   void _flipCard() async {
     if (!gameController.isClickable) return;
     if (flipAnimationController.isDismissed) {
-      
       shakeAnimationController.repeat(reverse: true);
       await gameController.flipCard(widget.index);
 
@@ -72,74 +74,68 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
     }
   }
 
-  Future<ImageProvider> preloadNetworkImage(String url) async {
-    final imageProvider = CachedNetworkImageProvider(url);
-    final completer = Completer<ImageProvider>();
 
-    final ImageStream stream = imageProvider.resolve(ImageConfiguration.empty);
-    final listener = ImageStreamListener(
-      (ImageInfo info, bool synchronousCall) {
-        if (!completer.isCompleted) {
-          completer.complete(imageProvider);
-        }
-      },
-      onError: (dynamic exception, StackTrace? stackTrace) {
-        if (!completer.isCompleted) {
-          completer.completeError(exception, stackTrace);
-        }
-      },
-    );
-
-    stream.addListener(listener);
-
-    try {
-      final result = await completer.future;
-      return result;
-    } finally {
-      stream.removeListener(listener);
-    }
-  }
 
   @override
   void dispose() {
     flipAnimationController.dispose();
     shakeAnimationController.dispose();
+    lightningController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _flipCard,
-      child: AnimatedBuilder(
-        animation: flipAnimation,
-        builder: (context, child) {
-          final angle = flipAnimation.value;
-          final isFrontVisible = angle <= pi / 2;
-
-          return Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001) // perspective
-              ..rotateY(angle),
-            child: isFrontVisible
-                ? AnimatedBuilder(
-                    animation: shakeAnimation,
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: -pi, end: 0),
+      duration: Duration(milliseconds: 1000),
+      curve: Curves.easeInOutCubic,
+      builder: (context, t, _) {
+        return Transform.rotate(
+          angle: t,
+          child: TweenAnimationBuilder(
+            tween: Tween<double>(begin: 200, end: 0),
+            duration: Duration(milliseconds: 1000),
+            builder: (context, value, _) {
+              return Transform.translate(
+                offset: Offset(value, 0),
+                child: GestureDetector(
+                  onTap: _flipCard,
+                  child: AnimatedBuilder(
+                    animation: flipAnimation,
                     builder: (context, child) {
-                      return ScaleTransition(
-                        scale: shakeAnimation,
-                        child: _buildFront(),
+                      final angle = flipAnimation.value;
+                      final isFrontVisible = angle <= pi / 2;
+
+                      return Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.identity()
+                          ..setEntry(3, 2, 0.001) // perspective
+                          ..rotateY(angle),
+                        child: isFrontVisible
+                            ? AnimatedBuilder(
+                                animation: shakeAnimation,
+                                builder: (context, child) {
+                                  return ScaleTransition(
+                                    scale: shakeAnimation,
+                                    child: _buildFront(),
+                                  );
+                                },
+                              )
+                            : Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.identity()..rotateY(pi),
+                                child: _buildBack(),
+                              ),
                       );
                     },
-                  )
-                : Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.identity()..rotateY(pi),
-                    child: _buildBack(),
                   ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -152,7 +148,19 @@ class _PrizeCardState extends State<PrizeCard> with TickerProviderStateMixin {
         //color: Colors.red,
         image: DecorationImage(image: AssetImage(AppAssets.board)),
       ),
-      child: Image.asset(AppAssets.questionMarkBoard, fit: .contain),
+      child: Lightning(
+        useGesture: false,
+        borderRadius: 5,
+        repeatInfinity: true,
+        delayDuration: const Duration(milliseconds: 300),
+        controller: lightningController,
+        direction: LightningDirection.leftToRight,
+        pauseDuration: const Duration(milliseconds: 200),
+        durationIn: const Duration(milliseconds: 300),
+        durationOut: const Duration(milliseconds: 450),
+        overlayColor: Colors.white.withAlpha(100),
+        child: Image.asset(AppAssets.questionMarkBoard, fit: .contain),
+      ),
     );
   }
 

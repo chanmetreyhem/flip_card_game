@@ -75,45 +75,60 @@ class _BigPrizeBoxState extends State<BigPrizeBox>
           Image.asset(AppAssets.coinGroup, fit: .contain),
       imageUrl: gameController.bigPrizes[currentIndex],
     );
-    return Container(
-      width: 200.h,
-      height: 200.h,
+    return Builder(
+      builder: (context) {
+        return TweenAnimationBuilder(
+          tween: Tween<double>(begin: 200, end: 0),
+          duration: Duration(milliseconds: 1000),
+          builder: (context, value, _) {
+            return Transform.translate(
+              offset: Offset(0, -value),
+              child: Container(
+                width: 200.h,
+                height: 200.h,
 
-      decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(AppAssets.circleFrame)),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(60).h,
-        decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage(AppAssets.light)),
-        ),
-        child: Transform.flip(
-          flipY: true,
-          child: AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              final angle = animation.value;
-              final isFrontVisible = angle <= pi / 2;
-
-              return Transform(
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.0008)
-                  ..rotateY(angle),
-
-                alignment: Alignment.center,
-
-                child: Transform(
-                  transform: Matrix4.identity()..rotateX(pi),
-                  alignment: Alignment.center,
-                  child: isFrontVisible
-                      ? bigPrizeImageTransform
-                      : bigPrizeImageTransform,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(AppAssets.circleFrame),
+                  ),
                 ),
-              );
-            },
-          ),
-        ),
-      ),
+                child: Container(
+                  padding: EdgeInsets.all(60).h,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(image: AssetImage(AppAssets.light)),
+                  ),
+                  child: Transform.flip(
+                    flipY: true,
+                    child: AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, child) {
+                        final angle = animation.value;
+                        final isFrontVisible = angle <= pi / 2;
+
+                        return Transform(
+                          transform: Matrix4.identity()
+                            ..setEntry(3, 2, 0.0008)
+                            ..rotateY(angle),
+
+                          alignment: Alignment.center,
+
+                          child: Transform(
+                            transform: Matrix4.identity()..rotateX(pi),
+                            alignment: Alignment.center,
+                            child: isFrontVisible
+                                ? bigPrizeImageTransform
+                                : bigPrizeImageTransform,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

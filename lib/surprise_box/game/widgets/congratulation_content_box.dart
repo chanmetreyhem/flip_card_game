@@ -16,39 +16,14 @@ class _CongratulationContentBoxState extends State<CongratulationContentBox>
     with SingleTickerProviderStateMixin {
   final SurpriseBoxGameController controller = Get.find();
 
-  late AnimationController animationController;
-  late Animation<double> animation;
-  @override
-  void initState() {
-    animationController = AnimationController(
-      duration: Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    animation = Tween<double>(begin: 1.3, end: 1).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: Curves.easeInOutQuart,
-      ),
-    );
-    animationController.forward();
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, _) {
-        return ScaleTransition(
-          scale: animation,
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0.9, end: 1),
+      duration: Duration(milliseconds: 300),
+      builder: (context, t, _) {
+        return Transform.scale(
+          scale: t,
           child: Container(
             width: 300.h,
             height: 400.h,

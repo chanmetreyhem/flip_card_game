@@ -11,7 +11,7 @@ class BrandInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: .min,
-      spacing: 10.h,
+      spacing: 5.h,
       children: [
         SizedBox(
           //color: Colors.red,
@@ -29,7 +29,7 @@ class BrandInfo extends StatelessWidget {
             mainAxisAlignment: .center,
             spacing: 20.h,
             children: [
-              Image.asset(AppAssets.wingPointIcon, width: 40.h, height: 40.h),
+              Image.asset(AppAssets.wingPointIcon, width: 30.h, height: 30.h),
 
               Text(
                 brandName,

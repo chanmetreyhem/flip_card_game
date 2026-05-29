@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppColor {
   static const primaryText = Color(0xFF001F3F);
@@ -365,7 +366,7 @@ class AppStyle {
   AppStyle._();
 
   static ThemeData themeData() {
-    String? fontFamily = 'Inter';
+    String? fontFamily = GoogleFonts.kdamThmorPro().fontFamily;
 
     return ThemeData(
       primaryColor: AppColor.primary,

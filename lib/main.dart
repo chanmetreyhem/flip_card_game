@@ -22,7 +22,7 @@ class App extends StatelessWidget {
           theme: AppStyle.themeData(),
           initialRoute: AppPage.initPage,
           getPages: AppPage.pages,
-          defaultTransition: Transition.fade,
+          defaultTransition: Transition.upToDown,
           transitionDuration: const Duration(milliseconds: 300),
         );
       },

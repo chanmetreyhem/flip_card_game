@@ -9,9 +9,8 @@ class WinPrizeIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 140.h,
-      width: 140.h,
-      // color: Colors.red,controller.winPrizes['image_url_win']
+      height: 130.h,
+      width: 130.h,
       child: CachedNetworkImage(
         progressIndicatorBuilder: (context, url, progress) =>
             CircularProgressIndicator(),

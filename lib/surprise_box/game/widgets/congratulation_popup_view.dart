@@ -1,5 +1,6 @@
 import 'package:flip_card_game/assets.dart';
 import 'package:flip_card_game/core/config/config.dart';
+import 'package:flip_card_game/lighting.dart';
 import 'package:flip_card_game/router/app_route.dart';
 import 'package:flip_card_game/surprise_box/game/controller.dart';
 
@@ -71,21 +72,6 @@ class _CongratulationPopupViewState extends State<CongratulationPopupView>
                 clipBehavior: .none,
                 alignment: .center,
                 children: [
-                  // header light
-                  HeaderLight(assetPath: AppAssets.headerLightHaft),
-                  TweenAnimationBuilder(
-                    tween: Tween<double>(begin: 0, end: 1),
-                    duration: Duration(milliseconds: 2000),
-                    builder: (context, double t, _) {
-                      return Transform.scale(
-                        scale: t,
-                        child: HeaderLight(
-                          assetPath: AppAssets.headerLightHaft,
-                        ),
-                      );
-                    },
-                  ),
-
                   // content box
                   CongratulationContentBox(),
 
@@ -134,7 +120,7 @@ class _CongratulationPopupViewState extends State<CongratulationPopupView>
                                 title: "Check Prize",
                                 backgroundColor: Colors.white,
                                 textColor: AppColor.primary,
-                                onTap: () => {},
+                                onTap: () => {Get.to(LightningCard())},
                               ),
                             ],
                           ),
